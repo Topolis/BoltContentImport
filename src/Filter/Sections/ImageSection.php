@@ -16,7 +16,7 @@ class ImageSection {
         $this->app = $app;
     }
 
-    public function parse($input){
+    public function parse($input, $parameters){
 
         $image = false;
         $size = 0;
@@ -38,7 +38,10 @@ class ImageSection {
         $imageurl = $image["url"];
         $urlparts = parse_url($imageurl);
         $imageid = md5($imageurl);
-        $imageext = array_pop(explode(".",$urlparts["path"]));
+
+        $path = $urlparts["path"];
+        $path = explode(".",$path);
+        $imageext = array_pop($path);
 
         if(!in_array($imageext, ["jpg", "gif", "png"]))
             return -2;
@@ -48,15 +51,35 @@ class ImageSection {
         /* @var FileService $fileService */
         $fileService = $this->app["cnd.image-service.file"];
 
+        if (isset($input["title"]))
+            $title = $input["title"] ? $input["title"] : basename($urlparts["path"]);
+        else
+            $title = basename($urlparts["path"]);
+
+        if (isset($input["description"]))
+            $description = $input["description"] ? $input["description"] : '';
+        else
+            $description = '';
+
+        if (isset($input["alt"]))
+            $alt = $input["alt"] ? $input["alt"] : $input["description"];
+        else
+            $alt = $description;
+
+        if (isset($input["copyright"]))
+            $copyright = $input["copyright"] ? $input["copyright"] : '';
+        else
+            $copyright = '';
+
         $image = Image::create([
             "id" => $imageid,
             "service" => isset($parameters["service"]) ? $parameters["service"] : "content",
             "status" => "new",
             "attributes" => [
-                "title" => $input["title"] ? $input["title"] : basename($urlparts["path"]),
-                "description" => $input["description"],
-                "copyright" => $input["copyright"],
-                "alt" => $input["alt"]
+                "title" => $title,
+                "description" => $description,
+                "copyright" => $copyright,
+                "alt" => $alt
             ]
         ]);
 
@@ -65,7 +88,7 @@ class ImageSection {
         $result = $imageService->imageProcess([$image], $messages);
 
         if(!$result) {
-            echo "Image upload failed";
+            echo "Image upload failed\n";
             print_r($messages);
             return -3;
         }

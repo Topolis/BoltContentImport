@@ -12,7 +12,7 @@ class ImportImage implements IFilter {
 
     protected static $allowed = ["jpg", "jpeg", "png", "gif"];
 
-    public static function filter($url, $parameters, Application $app, $values, $source){
+    public static function filter($url, $parameters, Application $app, &$values, &$source){
 
         if(!$url)
             return false;

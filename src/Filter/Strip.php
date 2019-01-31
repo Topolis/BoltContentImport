@@ -8,7 +8,7 @@ use Topolis\Bolt\Extension\ContentImport\IFilter;
 
 class Strip implements IFilter {
 
-    public static function filter($input, $parameters, Application $app, $values, $source){
+    public static function filter($input, $parameters, Application $app, &$values, &$source){
        return strip_tags($input, $parameters);
     }
 

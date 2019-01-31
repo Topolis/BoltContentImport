@@ -11,11 +11,11 @@ class GallerySection {
         $this->imageSection = new ImageSection($this->app);
     }
 
-    public function parse($input){
+    public function parse($input, $parameters){
 
         $images = [];
         foreach($input["items"] as $item) {
-            $result = $this->imageSection->parse($item);
+            $result = $this->imageSection->parse($item, $parameters);
 
             if(isset($result["data"]["items"]))
                 $images = array_merge($images, $result["data"]["items"]);

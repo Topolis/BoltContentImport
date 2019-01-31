@@ -16,11 +16,13 @@ class ImportImageservice implements IFilter {
 
     protected static $allowed = ["jpg", "jpeg", "png", "gif"];
 
-    public static function filter($url, $parameters, Application $app, $values, $source){
+    public static function filter($url, $parameters, Application $app, &$values, &$source){
 
         $urlparts = parse_url($url);
+        $path = $urlparts["path"];
+        $path_array = explode(".",$path);
         $imageid = md5($url);
-        $imageext = array_pop(explode(".",$urlparts["path"]));
+        $imageext = array_pop($path_array);
 
         if(!in_array($imageext, ["jpg", "gif", "png"]))
             return false;

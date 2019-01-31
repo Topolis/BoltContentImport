@@ -8,7 +8,7 @@ use Topolis\Bolt\Extension\ContentImport\IFilter;
 
 class Regex implements IFilter {
 
-    public static function filter($input, $parameters, Application $app, $values, $source){
+    public static function filter($input, $parameters, Application $app, &$values, &$source){
 
         $result = preg_match($parameters, $input, $matches, PREG_OFFSET_CAPTURE);
 

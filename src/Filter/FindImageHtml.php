@@ -8,7 +8,7 @@ use Topolis\Bolt\Extension\ContentImport\IFilter;
 
 class FindImageHtml implements IFilter {
 
-    public static function filter($input, $parameters, Application $app, $values, $source){
+    public static function filter($input, $parameters, Application $app, &$values, &$source){
 
         $found = preg_match('/<img[^>]+src="([^"]+)"/', $input, $matches);
         return $found ? $matches[1] : false;

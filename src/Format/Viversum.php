@@ -25,14 +25,35 @@ class Viversum extends BaseFormat implements IFormat {
     public function parse($url){
 
         // append date to url
-        $tomorrow = mktime(0, 0, 0, date("m")  , date("d")+1, date("Y"));
-        $date = date("Y-m-d", $tomorrow);
-        $url = $url . "&calcDate=" . $date;
+        $tomorrow = new \DateTime('tomorrow');
+        $url = $url . "&calcDate=" . $tomorrow->format('Y-m-d');
 
-        $type = $this->config["type"];
+        $type = $this->app["slugify"]->slugify($this->config["type"]);
+
+        switch($type){
+            case 'tageshoroskop':
+                break;
+
+            case 'wochenhoroskop':
+                $tomorrow->modify('monday this week');
+                break;
+
+            case 'monatshoroskop':
+            case 'beautyhoroskop':
+                $tomorrow->modify('first day of this month');
+                break;
+
+            case 'jahreshoroskop':
+                $tomorrow->modify('first day of january this year');
+                break;
+
+            default:
+                break;
+
+        }
+        $date = $tomorrow->format('Y-m-d');
 
         $input = $this->getUrl($url);
-
         $array = json_decode($input, true);
 
         $items = [];
@@ -66,7 +87,8 @@ class Viversum extends BaseFormat implements IFormat {
                 'guid' => $guid,
                 'name' => $item['zodiacSign']['name'],
                 'sign' => $sign,
-                'section' => $section
+                'section' => $section,
+                'date' => $date
             ];
         }
 

@@ -14,6 +14,6 @@ interface IFilter {
      * @param $source
      * @return array
      */
-    public static function filter($input, $parameters, Application $app, $values, $source);
+    public static function filter($input, $parameters, Application $app, &$values, &$source);
 
 }

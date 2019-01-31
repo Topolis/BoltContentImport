@@ -71,7 +71,7 @@ class Importer {
      * @param OutputInterface|bool $output
      * @param bool $verbose
      */
-    public function import($source = false, $output = false, $verbose = false){
+    public function import(&$source = false, $output = false, $verbose = false){
 
         foreach($this->config["imports"] as $key => $task) {
             if (!$source || $source == $key) {
@@ -157,7 +157,7 @@ class Importer {
 
             switch($mode){
                 case "add":
-                    if(!is_array($values[$field]))
+                    if(!isset($values[$field]) || !is_array($values[$field]))
                         $values[$field] = [];
 
                     if(is_array($value))
@@ -173,7 +173,7 @@ class Importer {
         return $values;
     }
 
-    protected function parseSource($source, OutputInterface $output, $verbose){
+    protected function parseSource(&$source, OutputInterface $output, $verbose){
 
         $format = Collection::get($source, "source.format", "rss2");
         $url = Collection::get($source, "source.url", false);
@@ -202,13 +202,14 @@ class Importer {
         return Collection::get($data, $config["source"], $config["default"]);
     }
 
-    protected function applyFilters($input, $config, $values, $item){
+    protected function applyFilters($input, $config, $values, &$item){
 
         $output = $input;
 
         $filters = Collection::get($config, "filters", []);
 
         // Check if this is an associative array. This allows short notation: "filters: [first, second]" beside complex with parameters "filters: [first: [a,b], second: [cd]]"
+        // filter_1: {parameter_name_1: 'parameter_value_1'}
         if( !(array_keys($filters) !== range(0, count($filters) - 1)) )
             $filters = array_flip($filters);
 

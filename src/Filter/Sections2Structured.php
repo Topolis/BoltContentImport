@@ -11,7 +11,7 @@ class Sections2Structured implements IFilter {
 
     public static $parsers = [];
 
-    public static function filter($input, $parameters, Application $app, $values, $source){
+    public static function filter($input, $parameters, Application $app, &$values, &$source){
 
         $items = [
             "data" => []

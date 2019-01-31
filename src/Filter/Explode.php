@@ -8,7 +8,7 @@ use Topolis\Bolt\Extension\ContentImport\IFilter;
 
 class Explode implements IFilter {
 
-    public static function filter($input, $parameters, Application $app, $values, $source){
+    public static function filter($input, $parameters, Application $app, &$values, &$source){
         $split     = isset($parameters[0]) ? $parameters[0] : " ";
         $index     = isset($parameters[1]) ? $parameters[1] : 0;
         $expectmin = isset($parameters[2]) ? $parameters[2] : 2;

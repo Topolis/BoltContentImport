@@ -9,7 +9,7 @@ use Topolis\FunctionLibrary\Collection;
 
 class Concat implements IFilter {
 
-    public static function filter($input, $parameters, Application $app, $values, $source){
+    public static function filter($input, $parameters, Application $app, &$values, &$source){
         $prefix  = isset($parameters[0]) ? $parameters[0] : "";
         $postfix = isset($parameters[1]) ? $parameters[1] : "";
 
