@@ -26,7 +26,6 @@ class Horoscopefr extends BaseFormat implements IFormat {
 
         // append date to url
         $tomorrow = new \DateTime('tomorrow');
-#        $url = $url . "&calcDate=" . $tomorrow->format('Y-m-d');
 
         $type = $this->app["slugify"]->slugify($this->config["type"]);
 
@@ -50,15 +49,10 @@ class Horoscopefr extends BaseFormat implements IFormat {
                 break;
 
         }
-#        $date = $tomorrow->format('Y-m-d');
 
         $input = $this->getUrl($url);
         $array = json_decode($input, true);
 
-#        echo "INPUT::".$input."\n";
-#        echo "URL::".$url."\n";
-#        echo "TYPE::".$type."\n";
-#        print_r($array);
         foreach ($array as $idx => $item) {
             $guid = $this->app["slugify"]->slugify($type.'-'.$item['date'].'-'.$item['zodiac sign']);
             $sign = $this->app["slugify"]->slugify($item['zodiac sign']);
@@ -90,11 +84,6 @@ class Horoscopefr extends BaseFormat implements IFormat {
                 'date' => $date
             ];
 
-
-
-#            echo "IDX::".$idx."\n";
-#            print_r($items);
-#            die("\nowei\n");
         }
 
         $result = [
