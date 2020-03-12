@@ -58,7 +58,16 @@ class Viversum extends BaseFormat implements IFormat {
 
         $items = [];
         $sections = [];
-        foreach ($array["horoscope"] as $idx => $item) {
+        $horoscopes = [];
+
+        ### because it's just for viversum I decided not to configure it at contentimport.topolis.yml
+        if (isset($array["horoscope"]))
+            $horoscopes = $array["horoscope"];
+        elseif (isset($array["typology"]))
+            $horoscopes = $array["typology"];
+
+        foreach ($horoscopes as $idx => $item) {
+
             $guid = $this->app["slugify"]->slugify($type.'-'.$array['validUntil'].'-'.$item['zodiacSign']['name']);
             $sign = $this->app["slugify"]->slugify($item['zodiacSign']['name']);
 
