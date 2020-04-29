@@ -17,23 +17,25 @@ class Sections2Structured implements IFilter {
             "data" => []
         ];
 
-        foreach($input as $section) {
+        if(is_array($input)) {
+            foreach($input as $section) {
 
-            $type = isset($section["type"]) ? $section["type"] : false;
-            if(!$type)
-                continue;
+                $type = isset($section["type"]) ? $section["type"] : false;
+                if(!$type)
+                    continue;
 
-            $parser = self::loadParser($type, $app);
-            if(!$parser){
-                echo "Missing type: ".$type."\n";
-                continue;
+                $parser = self::loadParser($type, $app);
+                if(!$parser){
+                    echo "Missing type: ".$type."\n";
+                    continue;
+                }
+
+                $item = $parser->parse($section, $parameters);
+                if(!$item)
+                    continue;
+
+                $items["data"][] = $item;
             }
-
-            $item = $parser->parse($section, $parameters);
-            if(!$item)
-                continue;
-
-            $items["data"][] = $item;
         }
 
         return json_encode($items);

@@ -7,6 +7,7 @@ use Bolt\Extension\CND\ImageService\Service\FileService;
 use Bolt\Extension\CND\ImageService\Service\ImageService;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
+use Topolis\FunctionLibrary\Collection;
 
 class ImageSection {
 
@@ -38,7 +39,8 @@ class ImageSection {
         $imageurl = $image["url"];
         $urlparts = parse_url($imageurl);
         $imageid = md5($imageurl);
-        $imageext = array_pop(explode(".",$urlparts["path"]));
+        $path = explode(".",$urlparts["path"]);
+        $imageext = array_pop($path);
 
         if(!in_array($imageext, ["jpg", "gif", "png"]))
             return -2;
@@ -53,10 +55,10 @@ class ImageSection {
             "service" => isset($parameters["service"]) ? $parameters["service"] : "content",
             "status" => "new",
             "attributes" => [
-                "title" => $input["title"] ? $input["title"] : basename($urlparts["path"]),
-                "description" => $input["description"],
-                "copyright" => $input["copyright"],
-                "alt" => $input["alt"]
+                "title" => Collection::get($input,"title", basename($urlparts["path"])),
+                "description" => $input["description"] ?? '',
+                "copyright" => $input["copyright"] ?? '',
+                "alt" => $input["alt"] ?? ''
             ]
         ]);
 

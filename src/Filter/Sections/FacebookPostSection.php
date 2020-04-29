@@ -1,18 +1,20 @@
 <?php
 
+
 namespace Topolis\Bolt\Extension\ContentImport\Filter\Sections;
 
-class InstagramPostSection {
 
+class FacebookPostSection
+{
     public function parse($input, $parameters){
+        return false;
         return [
             "type" => "oembed",
             "data" => [
-                "type" => "instagram",
-                "url" => "https://www.instagram.com/p/".$input["id"],
+                "type" => "facebook",
+                "url" => $input["id"],
                 "html" => $input["embed"]
             ]
         ];
     }
-
 }

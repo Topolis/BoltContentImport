@@ -9,6 +9,8 @@ use Exception;
 use Silex\Application;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\OutputInterface;
+use Topolis\Bolt\Extension\ContentImport\Filter\Traits\ApplyFilter;
+use Topolis\Bolt\Extension\ContentImport\Filter\Traits\ImportContent;
 use Topolis\Bolt\Extension\ContentImport\IFilter;
 use Topolis\Bolt\Extension\ContentImport\IFormat;
 use Topolis\FunctionLibrary\Collection;
@@ -21,6 +23,9 @@ use Topolis\FunctionLibrary\Token;
  * <kenny@dropbear.com.au>
  */
 class Importer {
+
+    use ApplyFilter;
+    use ImportContent;
 
     /* @var array $config */
     protected $config;
@@ -99,7 +104,7 @@ class Importer {
                     $fields = Collection::get($task, "taxonomies", []);
                     $taxonomies = $this->getValues($item, $parsed["channel"], $fields, "add");
 
-                    $this->importContent($values, $taxonomies, $task);
+                    $this->importContent($this->app, $values, $taxonomies, $task);
 
                     $progress->advance();
                     $imported ++;
@@ -152,12 +157,14 @@ class Importer {
         foreach($fields as $field => $config){
             $config = $config + self::$defaultField;
 
+            $filters = Collection::get($config, "filters", []);
+
             $value = $this->extractValues($item, $channel, $config);
-            $value = $this->applyFilters($value, $config, $values, $item);
+            $value = $this->applyFilters($filters, $value, $this->app, $values, $item);
 
             switch($mode){
                 case "add":
-                    if(!is_array($values[$field]))
+                    if(!isset($values[$field]) || !is_array($values[$field]))
                         $values[$field] = [];
 
                     if(is_array($value))
@@ -202,11 +209,10 @@ class Importer {
         return Collection::get($data, $config["source"], $config["default"]);
     }
 
-    protected function applyFilters($input, $config, $values, $item){
+    /*
+    protected function applyFilters($filters, $input, $config, $values, $item){
 
         $output = $input;
-
-        $filters = Collection::get($config, "filters", []);
 
         // Check if this is an associative array. This allows short notation: "filters: [first, second]" beside complex with parameters "filters: [first: [a,b], second: [cd]]"
         if( !(array_keys($filters) !== range(0, count($filters) - 1)) )
@@ -239,14 +245,13 @@ class Importer {
         $slugField = Collection::get($config, "slug", "title");
         $status = Collection::get($config, "status", "published");
 
-        /* @var Repository $repo */
+        / * @var Repository $repo * /
         $repo = $this->app['storage']->getRepository($contenttype);
 
-        /* @var Content $content */
+        / * @var Content $content * /
         $content = $repo->findOneBy([$identifierField => $identifier]);
         if(!$content) {
             $content = $repo->create(['contenttype' => $contenttype, 'status' => $status]);
-
             $content->setSlug($this->app["slugify"]->slugify($values[$slugField]));
             $content->setDatecreated(new DateTime("now"));
         }
@@ -257,12 +262,12 @@ class Importer {
             $content->set($key, $value);
         }
 
-        /* @var Taxonomy $taxonomy */
+        / * @var Taxonomy $taxonomy * /
         $taxonomy = $this->app['storage']->createCollection('Bolt\Storage\Entity\Taxonomy');
         $taxonomy->setFromPost(["taxonomy" => $taxonomies], $content);
         $content->setTaxonomy($taxonomy);
 
         $repo->save($content);
-    }
+    }*/
 
 }
