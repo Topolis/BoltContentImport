@@ -21,9 +21,35 @@ class TeaserSection
     }
 
     public function parse($input, $parameters){
+
         $parameters = Collection::get($parameters, 'Teaser',[]);
         $teaser = [];
         $map = $parameters['map'];
+        $isInternal = $parameters['is_internal'] ?? false;
+        $contenttype = Collection::get($parameters, 'config.contenttypeslug', '');
+        $result = [
+            "type" => ucfirst($contenttype),
+            "data"=>[
+                "status" => true,
+                "items" => [
+                    [
+                        "id"=> "",
+                        "service" => "content",
+                        "type"=> "teaser",
+                        "attributes"=>[]
+                    ]
+                ]
+            ]
+        ];
+
+        // Internal teasers will have to already been imported
+        // TODO: Let an external script set the right relationlist link
+        if($isInternal && preg_match($isInternal, $input['url'])) {
+            $path = explode('/', $input['url']);
+            Collection::set($result, 'data.items.0.id', "unknown/".end($path));
+
+            return $result;
+        }
 
         foreach($map as $target => $src) {
             $srcPath = $src;
@@ -42,25 +68,14 @@ class TeaserSection
             Collection::set($teaser, $target, $value);
         }
 
-        if($teaser)
-            $teaser = $this->importContent($this->app, $teaser, [], $parameters['config']);
+        if(!$teaser)
+            return null;
 
-        $contenttype = Collection::get($parameters, 'config.contenttypeslug', '');
+        $teaser = $this->importContent($this->app, $teaser, [], $parameters['config']);
 
-        return [
-            "type" => ucfirst($contenttype),
-            "data"=>[
-                "status" => true,
-                "items" => [
-                    [
-                        "id"=> $contenttype."/".$teaser['id'],
-                        "service" => "content",
-                        "type"=>"teaser",
-                        "attributes"=>[]
-                    ]
-                ]
-            ]
-        ];
+        Collection::set($result, 'data.items.0.id', $contenttype."/".$teaser['id']);
+
+        return $result;
 
     }
 }

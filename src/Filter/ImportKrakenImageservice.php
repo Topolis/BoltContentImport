@@ -67,6 +67,8 @@ class ImportKrakenImageservice implements IFilter {
 
             $diff = abs($target - $variant["aspectRatio"]);
 
+            // Take the best aspect ration image. Prefer the one that is bigger than the wished size
+            // or store it as fallback
             if($bestDiff === false || $diff < $bestDiff){
                 $okImage = $variant;
                 $bestImage = $width <= $variant['width'] && $height <= $variant['height'] ? $variant : $bestImage;

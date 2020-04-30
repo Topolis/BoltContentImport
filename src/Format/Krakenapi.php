@@ -115,7 +115,7 @@ class Krakenapi extends BaseFormat implements IFormat {
         $cacheKey = md5(serialize([$filters,$limit,$offset,$order]));
 
         /* @var \Doctrine\Common\Cache\Cache $cache */
-        $cache = $this->container['cache'];
+        $cache = $this->app['cache'];
 
         if($cache->contains($cacheKey))
             return $cache->fetch($cacheKey);

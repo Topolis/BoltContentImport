@@ -18,7 +18,7 @@ class IfThen implements IFilter {
 
         foreach ($parameters as $param) {
             $field = $param['field'] ?? false;
-            $operator = $param['operator'];
+            $operator = $param['operator'] ?? "eq";
             $target = $param['target'];
 
             // Digs deeper in to the field or use the field value for the check
