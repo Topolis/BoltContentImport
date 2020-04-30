@@ -112,18 +112,18 @@ class Krakenapi extends BaseFormat implements IFormat {
      * @throws \CND\KrakenSDK\Exception
      */
     protected function requestKraken($filters, $limit = 20, $offset = 0, $order = []){
-        /*$cacheKey = md5(serialize([$filters,$limit,$offset,$order]));
+        $cacheKey = md5(serialize([$filters,$limit,$offset,$order]));
 
-        /* @var \Doctrine\Common\Cache\Cache $cache * /
+        /* @var \Doctrine\Common\Cache\Cache $cache */
         $cache = $this->container['cache'];
 
         if($cache->contains($cacheKey))
             return $cache->fetch($cacheKey);
-        */
+
 
         $result = $this->store->findBy($filters, $limit, $offset, $order);
 
-        //$cache->save($cacheKey, $result, self::TTL);
+        $cache->save($cacheKey, $result, self::TTL);
 
         return $result;
     }

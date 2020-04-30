@@ -18,26 +18,33 @@ class IfThen implements IFilter {
 
         foreach ($parameters as $param) {
             $field = $param['field'] ?? false;
+            $operator = $param['operator'];
+            $target = $param['target'];
 
             // Digs deeper in to the field or use the field value for the check
             $value = Collection::get($output, $field, $output);
-            $state = true;
 
-            // Made like this to exten with the other Checks ne, gt, lt ...
-            if (isset($param['eq']) && $param['eq'] !== $value) {
-                $state = false;
-            }
-
-            if (isset($param['ne']) && $param['ne'] === $value) {
-                $state = false;
-            }
-
-            if (isset($param['lt']) && $param['lt'] > $value) {
-                $state = false;
-            }
-
-            if (isset($param['gt']) && $param['gt'] < $value) {
-                $state = false;
+            switch($operator) {
+                case 'ne':
+                    $state  = $target !== $value;
+                    break;
+                case 'eq':
+                    $state  = $target === $value;
+                    break;
+                case 'lt':
+                    $state  = $target > $value;
+                    break;
+                case 'lte':
+                    $state  = $target >= $value;
+                    break;
+                case 'gt':
+                    $state  = $target < $value;
+                    break;
+                case 'gte':
+                    $state  = $target <= $value;
+                    break;
+                default:
+                    $state = false;
             }
 
             $then = $param['then'] ?? '';
