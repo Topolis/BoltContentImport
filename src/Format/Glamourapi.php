@@ -46,6 +46,7 @@ class Glamourapi extends Krakenapi {
             $sections = Collection::get($item, 'content.sections', []);
             $imageFound = false;
 
+            // Fix section errors that are specific to GLAMOUR import from EZ
             foreach ($sections as $i => $section) {
                 if($i===0 && $section['type'] === 'image') {
                     $item['content']['image'] = $section;
