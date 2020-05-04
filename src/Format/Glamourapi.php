@@ -43,12 +43,31 @@ class Glamourapi extends Krakenapi {
         // glamour imports the Highlight image as the first section in kraken
         // that is why whe have to adjust the data before pass it to the filters
         foreach($items as $key => $item) {
-            $first = Collection::get($item, 'content.sections.0', false);
-            if($first && $first['type'] === 'image') {
-                $item['content']['image'] = $first;
-                array_shift($item['content']['sections']);
-                $items[$key] = $item;
+            $sections = Collection::get($item, 'content.sections', []);
+            $imageFound = false;
+
+            foreach ($sections as $i => $section) {
+                if($i===0 && $section['type'] === 'image') {
+                    $item['content']['image'] = $section;
+                    $imageFound = true;
+                    continue;
+                }
+
+                // Fix glamour embed imports SSL Problem
+                if($section['embed'] ?? false) {
+                    $section['embed'] = str_replace('http://','https://', $section['embed']);
+                }
+
+                $sections[$i] = $section;
             }
+
+            // Remove First image as its used for Highlight image
+            if($imageFound) {
+                array_shift($sections);
+            }
+
+            $item['content']['sections'] = $sections;
+            $items[$key] = $item;
         }
 
         return [
