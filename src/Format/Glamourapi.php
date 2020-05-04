@@ -48,6 +48,7 @@ class Glamourapi extends Krakenapi {
 
             // Fix section errors that are specific to GLAMOUR import from EZ
             foreach ($sections as $i => $section) {
+
                 if($i===0 && $section['type'] === 'image') {
                     $item['content']['image'] = $section;
                     $imageFound = true;
@@ -62,11 +63,12 @@ class Glamourapi extends Krakenapi {
                 $sections[$i] = $section;
             }
 
-            // Remove First image as its used for Highlight image
+            // Remove First image as its used as a Highlight image
             if($imageFound) {
                 array_shift($sections);
             }
 
+            // Update the Sections
             $item['content']['sections'] = $sections;
             $items[$key] = $item;
         }
