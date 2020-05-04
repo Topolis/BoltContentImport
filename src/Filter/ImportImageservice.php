@@ -20,7 +20,8 @@ class ImportImageservice implements IFilter {
 
         $urlparts = parse_url($url);
         $imageid = md5($url);
-        $imageext = array_pop(explode(".",$urlparts["path"]));
+        $parts = explode(".", $urlparts["path"]);
+        $imageext = array_pop($parts);
 
         if(!in_array($imageext, ["jpg", "gif", "png"]))
             return false;
@@ -34,7 +35,8 @@ class ImportImageservice implements IFilter {
         $attributes = [];
         if(isset($parameters["map"])) {
             foreach ($parameters["map"] as $target => $key) {
-                $attributes[$target] = Collection::get($source, $key, "");
+                $val = Collection::get($source, $key, "");
+                Collection::set($attributes, $target, $val);
             }
         }
 

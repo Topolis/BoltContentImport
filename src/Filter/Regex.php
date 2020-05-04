@@ -12,7 +12,11 @@ class Regex implements IFilter {
 
         $result = preg_match($parameters, $input, $matches, PREG_OFFSET_CAPTURE);
 
-        return $result ? $matches[1][0] : false;
+        if($result)
+            // Returns the named pattern Target or the first match
+            return $matches['Target'] ?? $matches[1][0];
+
+        return false;
     }
 
 }

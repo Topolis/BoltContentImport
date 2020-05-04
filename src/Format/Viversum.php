@@ -12,7 +12,7 @@ class Viversum extends BaseFormat implements IFormat {
      * Viversum constructor.
      * @param Application $app
      */
-    public function __construct($config, Application $app){
+    public function __construct(array $config, Application $app){
 
         parent::__construct($config,  $app);
 

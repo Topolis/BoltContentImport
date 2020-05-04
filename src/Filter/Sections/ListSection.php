@@ -7,7 +7,7 @@ class ListSection {
     public function parse($input, $parameters){
 
         $items = [];
-        foreach($input["elements"] as $item){
+        foreach($input["elements"] ?? [] as $item){
             $items[] = [
                 "content" => $item
             ];
