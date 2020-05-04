@@ -61,7 +61,6 @@ class TeaserSection
             }
 
             $value = Collection::get($input, $srcPath, '');
-
             if($filters)
                 $value = $this->applyFilters($filters, $value, $this->app, $teaser, $input);
 
