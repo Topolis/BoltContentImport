@@ -17,12 +17,12 @@ class IfThen implements IFilter {
         $output = $input;
 
         foreach ($parameters as $param) {
-            $field = $param['field'] ?? false;
+            $field = $param['source'] ?? false;
             $operator = $param['operator'] ?? "eq";
             $target = $param['target'];
 
             // Digs deeper in to the field or use the field value for the check
-            $value = Collection::get($output, $field, $output);
+            $value = Collection::get($source, $field, $output);
 
             switch($operator) {
                 case 'ne':
@@ -43,6 +43,14 @@ class IfThen implements IFilter {
                 case 'gte':
                     $state  = $target <= $value;
                     break;
+                case 'in':
+                    $value  = is_array($value) ? $value : [$value];
+                    $state  = in_array($target, $value);
+                    break;
+                case 'nin':
+                    $value  = is_array($value) ? $value : [$value];
+                    $state  = !in_array($target, $value);
+                    break;
                 default:
                     $state = false;
             }
@@ -50,12 +58,15 @@ class IfThen implements IFilter {
             $then = $param['then'] ?? '';
 
             if ($state && is_array($then) ) {
-                $value = Collection::get($source, $then['source'] ?? ''  , $input);
+                $value = $then['default'] ?? $output;
+                if($then['source'] ?? false)
+                    $value = Collection::get($source, $then['source']  , $value);
+
                 $output = self::applyFilters($then['filters'], $value, $app, $values, $source);
             }
 
             if ($state && !is_array($then) ) {
-                $output =  $then;
+                $output = $then;
             }
 
         }
