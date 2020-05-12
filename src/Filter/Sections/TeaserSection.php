@@ -8,11 +8,9 @@ use Topolis\Bolt\Extension\ContentImport\Filter\Traits\ApplyFilter;
 use Topolis\Bolt\Extension\ContentImport\Filter\Traits\ImportContent;
 use Topolis\FunctionLibrary\Collection;
 
-class TeaserSection
-{
+class TeaserSection {
 
     use ImportContent;
-    use ApplyFilter;
 
     private $app;
 
@@ -20,6 +18,12 @@ class TeaserSection
         $this->app = $app;
     }
 
+    /**
+     * @param $input
+     * @param $parameters
+     * @return array|null
+     * @throws \Exception
+     */
     public function parse($input, $parameters){
 
         $parameters = Collection::get($parameters, 'Teaser',[]);
@@ -62,7 +66,7 @@ class TeaserSection
 
             $value = Collection::get($input, $srcPath, '');
             if($filters)
-                $value = $this->applyFilters($filters, $value, $this->app, $teaser, $input);
+                $value = self::applyFilters($filters, $value, $this->app, $teaser, $input);
 
             Collection::set($teaser, $target, $value);
         }

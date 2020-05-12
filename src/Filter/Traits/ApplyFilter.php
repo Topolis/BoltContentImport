@@ -5,8 +5,17 @@ namespace Topolis\Bolt\Extension\ContentImport\Filter\Traits;
 use Silex\Application;
 use Topolis\Bolt\Extension\ContentImport\IFilter;
 
-trait ApplyFilter
-{
+trait ApplyFilter {
+
+    /**
+     * @param $filters
+     * @param $input
+     * @param Application $app
+     * @param $values
+     * @param $source
+     * @return array
+     * @throws \Exception
+     */
     protected static function applyFilters($filters, $input, Application $app, $values, $source) {
         $output = $input;
 
