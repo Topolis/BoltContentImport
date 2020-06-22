@@ -32,7 +32,7 @@ class TeaserSection {
         $isInternal = $parameters['is_internal'] ?? false;
         $contenttype = Collection::get($parameters, 'config.contenttypeslug', '');
         $result = [
-            "type" => ucfirst($contenttype),
+            "type" => strtolower($contenttype),
             "data"=>[
                 "status" => true,
                 "items" => [
