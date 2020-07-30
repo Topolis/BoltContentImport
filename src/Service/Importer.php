@@ -76,10 +76,16 @@ class Importer {
      * @param bool $verbose
      * @throws Exception
      */
-    public function import($source = false, $output = false, $verbose = false){
-
+    public function import($source = false, $output = false, $verbose = false, $overrideSource=[]){
+        $hasMore = [];
         foreach($this->config["imports"] as $key => $task) {
             if (!$source || $source == $key) {
+
+                // Allows to manually change the Predefined Import
+                // for manual imports and tests
+                foreach($overrideSource as $path => $value) {
+                    Collection::set($task, $path, $value);
+                }
 
                 $count = Collection::get($task, "count", 100);
 
@@ -103,12 +109,14 @@ class Importer {
                     $imported ++;
                 }
 
+                $hasMore[$key] = $imported <= $count;
+
                 $progress->finish();
                 $output->writeln("");
             }
         }
 
-        return;
+        return $hasMore;
     }
 
     /**

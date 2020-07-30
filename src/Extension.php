@@ -10,6 +10,7 @@ use Silex\Application;
 
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Topolis\Bolt\Extension\ContentImport\Command\Import;
+use Topolis\Bolt\Extension\ContentImport\Command\ImportIterative;
 use Topolis\Bolt\Extension\ContentImport\Command\Purge;
 use Topolis\Bolt\Extension\ContentImport\Service\Importer;
 
@@ -31,6 +32,7 @@ class Extension extends SimpleExtension {
     protected function registerNutCommands(Container $container)
     {
         return [
+            new ImportIterative($container),
             new Import($container),
             new Purge($container),
         ];

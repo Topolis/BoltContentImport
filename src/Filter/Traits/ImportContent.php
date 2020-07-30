@@ -33,6 +33,10 @@ trait ImportContent {
 
         // Phase 1 - get identifier field only
         $fields = Collection::get($config, "fields", []);
+
+        if(!$fields)
+            return false;
+
         $values = $this->getValues($item, $channel, array_intersect_key($fields, [
             $identifierField => true,
             $slugField => true,
@@ -88,6 +92,9 @@ trait ImportContent {
         $values = [];
         foreach($fields as $field => $config){
             $config = $config + self::$defaultField;
+
+            // Hack for the sub-cathegory to be added to the tags as well.
+            $field  = trim($field, '_');
 
             $filters = Collection::get($config, "filters", []);
 
