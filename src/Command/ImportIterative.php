@@ -75,7 +75,6 @@ class ImportIterative extends Command {
         $overrides = [];
 
         if($file) {
-
             $addOverrides = file_get_contents($file);
             $addOverrides = json_decode($addOverrides, true);
             $overrides += $addOverrides;
