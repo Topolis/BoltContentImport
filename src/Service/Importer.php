@@ -77,10 +77,9 @@ class Importer {
      * @throws Exception
      */
     public function import($source = false, $output = false, $verbose = false, $overrideSource=[]){
-        $hasMore = [];
+
         foreach($this->config["imports"] as $key => $task) {
             if (!$source || $source == $key) {
-
                 // Allows to manually change the Predefined Import
                 // for manual imports and tests
                 foreach($overrideSource as $path => $value) {
@@ -88,6 +87,9 @@ class Importer {
                 }
 
                 $count = Collection::get($task, "count", 100);
+
+                $errorFile = Collection::get($task, "error_file", 'errors.csv');
+                $errorStream = fopen($errorFile, "w+");
 
                 $output->writeln("Importing source ".$key." ");
 
@@ -99,24 +101,27 @@ class Importer {
 
                 $imported = 0;
                 foreach($parsed["items"] as $item){
+                    try {
+                        if ($imported >= $count)
+                            break;
 
-                    if($imported >= $count)
-                        break;
+                        $this->importContent($this->app, $item, $parsed['channel'], $task);
 
-                    $this->importContent($this->app, $item, $parsed['channel'], $task);
-
-                    $progress->advance();
-                    $imported ++;
+                        $progress->advance();
+                        $imported++;
+                    } catch (\Exception $e) {
+                        fputs($errorStream, json_encode($item));
+                    }
                 }
 
-                $hasMore[$key] = $imported <= $count;
+                fclose($errorStream);
 
                 $progress->finish();
                 $output->writeln("");
             }
         }
 
-        return $hasMore;
+        return;
     }
 
     /**
