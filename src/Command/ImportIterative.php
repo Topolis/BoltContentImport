@@ -56,7 +56,7 @@ class ImportIterative extends Command {
                 'Max number Call to make to get records',
                 0
             )->addOption(
-                'from-file',
+                'source-file',
                 'f',
                 InputArgument::OPTIONAL,
                 'Read overwrites from file',
@@ -70,14 +70,15 @@ class ImportIterative extends Command {
         $initial    = $input->getOption('initial') ?: 0;
         $iterator   = $input->getOption('iterator') ?: 'offset';
         $iterations = $input->getOption('iterations') ?: 1;
-        $file       = $input->getOption('from-file') ?: null;
+        $file       = $input->getOption('source-file') ?: null;
 
         $overrides = [];
 
         if($file) {
-            $addOptions = file_get_contents($file);
-            $addOptions = json_decode($addOptions, true);
-            $overrides += $addOptions;
+
+            $addOverrides = file_get_contents($file);
+            $addOverrides = json_decode($addOverrides, true);
+            $overrides += $addOverrides;
         }
 
         $overrides[$iterator] = $initial;
@@ -85,7 +86,7 @@ class ImportIterative extends Command {
 
         for ($i=0; $i<$iterations; $i++) {
             $output->writeln('Iteration: ' . $overrides[$iterator]);
-            $this->app[Extension::EXTID.".importer"]->import($source, $output, $verbose, $overrides);
+            $this->app[Extension::EXTID . ".importer"]->import($source, $output, $verbose, $overrides);
             $overrides[$iterator] += 30;
         }
 
