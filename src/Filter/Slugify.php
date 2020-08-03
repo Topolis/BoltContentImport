@@ -12,7 +12,7 @@ class Slugify implements IFilter {
 
         if(is_array($input)){
             foreach ($input as $key => $val) {
-                $input[$key] = $app["slugify"]->slugify($input[$key]);
+                $input[$key] = $app["slugify"]->slugify($val);
             }
         } else {
             $input = $app["slugify"]->slugify($input);
