@@ -22,7 +22,10 @@ class Explode implements IFilter {
         if(count($exploded) < $expectmin)
             return $errorall ? $input : false;
 
-        return $exploded[$index] ?: false;
+        if($index>=0)
+            return $exploded[$index] ?: false;
+        else
+            return $exploded;
     }
 
     protected static function explode($seperators, $input){
