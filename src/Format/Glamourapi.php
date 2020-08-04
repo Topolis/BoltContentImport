@@ -76,9 +76,13 @@ class Glamourapi extends Krakenapi {
 
             // Add Subcategory as Tag
             $subCat = $item['meta']['subcategory'];
-            $taxonomy = $this->app['storage']->createCollection('Bolt\Storage\Entity\Taxonomy');
-            $subCatName = $taxonomy->config['subcategories']['options'][$subCat];
-            $item['meta']['tags'][] = $subCatName;
+            if($subCat) {
+                $taxonomy = $this->app['storage']->createCollection('Bolt\Storage\Entity\Taxonomy');
+                $subCatName = $taxonomy->config['subcategories']['options'][$subCat] ?? false;
+
+                if($subCatName)
+                    $item['meta']['tags'][] = $subCatName;
+            }
 
             $items[$key] = $item;
         }
