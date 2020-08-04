@@ -9,7 +9,7 @@ use Topolis\Bolt\Extension\ContentImport\IFilter;
 class Implode implements IFilter {
 
     public static function filter($input, $parameters, Application $app, $values, $source){
-       return implode($parameters ?: ' ',  $input);
+        return is_array($input) ? implode($parameters ?: ' ',  $input) : $input;
     }
 
 }
