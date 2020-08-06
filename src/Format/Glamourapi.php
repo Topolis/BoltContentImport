@@ -40,9 +40,12 @@ class Glamourapi extends Krakenapi {
 
         $items = $items ?: [];
 
-        // glamour imports the Highlight image as the first section in kraken
-        // that is why whe have to adjust the data before pass it to the filters
+        // General fixes
         foreach($items as $key => $item) {
+
+            // glamour imports the Highlight image as the first section in kraken
+            // that is why whe have to adjust the data before pass it to the filters
+
             $sections = Collection::get($item, 'content.sections', []);
             $imageFound = false;
 
@@ -70,6 +73,17 @@ class Glamourapi extends Krakenapi {
 
             // Update the Sections
             $item['content']['sections'] = $sections;
+
+            // Add Subcategory as Tag
+            $subCat = $item['meta']['subcategory'] ?? false;
+            if($subCat) {
+                $taxonomy = $this->app['storage']->createCollection('Bolt\Storage\Entity\Taxonomy');
+                $subCatName = $taxonomy->config['subcategories']['options'][$subCat] ?? false;
+
+                if($subCatName)
+                    $item['meta']['tags'][] = $subCatName;
+            }
+
             $items[$key] = $item;
         }
 

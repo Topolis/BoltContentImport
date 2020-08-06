@@ -38,7 +38,8 @@ class ImportKrakenImageservice implements IFilter {
             $urls[] = $image['url'];
 
             $result = $Filter->filter($image['url'], $parameters, $app, $values, $imageObject);
-            $items += $result["items"] ?? [];
+            // + replaces the key 0
+            $items = array_merge($items, $result["items"] ?? []);
         }
 
         return [

@@ -9,7 +9,16 @@ use Topolis\Bolt\Extension\ContentImport\IFilter;
 class Slugify implements IFilter {
 
     public static function filter($input, $parameters, Application $app, $values, $source){
-       return $app["slugify"]->slugify($input);
+
+        if(is_array($input)){
+            foreach ($input as $key => $val) {
+                $input[$key] = $app["slugify"]->slugify($val);
+            }
+        } else {
+            $input = $app["slugify"]->slugify($input);
+        }
+
+        return $input;
     }
 
 }
