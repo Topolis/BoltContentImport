@@ -35,6 +35,7 @@ class Viversum extends BaseFormat implements IFormat {
                 break;
 
             case 'wochenhoroskop':
+            case 'erotic-horoskop':
                 $tomorrow->modify('monday this week');
                 break;
 
